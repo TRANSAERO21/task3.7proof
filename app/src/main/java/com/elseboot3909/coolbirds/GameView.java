@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,32 +22,32 @@ public class GameView extends View {
     private Sprite enemyBird;
 
 
-    private final int timerInterval = 50;
+    private final int timerInterval = 85;
 
     public GameView(Context context) {
         super(context);
 
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.new_birds);
-        int w = b.getWidth()/5;
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.good_bird);
+        int w = b.getWidth()/4;
         int h = b.getHeight();
 
         Rect firstFrame = new Rect(0, 0, w, h);
 
-        playerBird = new Sprite(0, 0, 0, 100, firstFrame, b);
+        playerBird = new Sprite(0, 0, 0, 350, firstFrame, b);
 
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 3; j++) {
             playerBird.addFrame(new Rect(j * w, 0, j * w + w, w));
         }
 
         b = BitmapFactory.decodeResource(getResources(), R.drawable.bad_birds);
-        w = b.getWidth()/5;
+        w = b.getWidth()/4;
         h = b.getHeight();
 
         firstFrame = new Rect(0, 0, w, h);
 
-        enemyBird = new Sprite(2000, 250, -300, 0, firstFrame, b);
+        enemyBird = new Sprite(2000, 250, -800, 0, firstFrame, b);
 
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 3; j++) {
             enemyBird.addFrame(new Rect(j * w, 0, j * w + w, w));
         }
 
@@ -77,10 +76,9 @@ public class GameView extends View {
         enemyBird.draw(canvas);
     }
 
-    protected void update () {
+    protected void update() {
         playerBird.update(timerInterval);
         enemyBird.update(timerInterval);
-
         if (playerBird.getY() + playerBird.getFrameHeight() > viewHeight) {
             playerBird.setY(viewHeight - playerBird.getFrameHeight());
             playerBird.setVelocityY(-playerBird.getVelocityY());
@@ -91,14 +89,13 @@ public class GameView extends View {
             points--;
         }
         if (enemyBird.getX() < - enemyBird.getFrameWidth()) {
-            teleportEnemy ();
+            teleportEnemy();
             points +=10;
         }
         if (enemyBird.intersect(playerBird)) {
-            teleportEnemy ();
+            teleportEnemy();
             points -= 40;
         }
-
         invalidate();
     }
 
@@ -121,23 +118,7 @@ public class GameView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         int eventAction = event.getAction();
         if (eventAction == MotionEvent.ACTION_DOWN)  {
-            Log.v("LOGV_BIRDS", "PRESSED!!!");
-//            if (event.getY() < playerBird.getBoundingBoxRect().top) {
-//                Log.v("LOGV_BIRDS", "BIRD IS GOING DOWN");
-//                playerBird.setVelocityY(-100);
-//                points--;
-//            } else if (event.getY() > (playerBird.getBoundingBoxRect().bottom)) {
-//                Log.v("LOGV_BIRDS", "BIRD IS GOING UP");
-//                playerBird.setVelocityY(100);
-//                points--;
-//            }
-            if (playerBird.getVelocityY() == 100) {
-                Log.v("LOGV_BIRDS", "BIRD IS GOING DOWN");
-                playerBird.setVelocityY(-100);
-            } else {
-                Log.v("LOGV_BIRDS", "BIRD IS GOING UP");
-                playerBird.setVelocityY(100);
-            }
+            playerBird.setVelocityY(playerBird.getVelocityY() * -1);
             points--;
         }
         return true;
