@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sprite {
+public class Sprite implements Cloneable {
     private Bitmap bitmap;
     private List<Rect> frames;
     private int frameWidth;
@@ -169,6 +169,20 @@ public class Sprite {
 
     public boolean intersect(Sprite s) {
         return getBoundingBoxRect().intersect(s.getBoundingBoxRect());
+    }
+
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void teleportEnemy(int offset, int viewWidth, int viewHeight) {
+        setX(viewWidth + offset + Math.random() * 500);
+        setY(Math.random() * (viewHeight - getFrameHeight()));
     }
 
 }
